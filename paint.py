@@ -9,6 +9,9 @@ import tkinter as ttk
 import sys
 from tkinter import Toplevel
 from PIL import Image
+import os
+import io
+import subprocess
 def on_closing():
     root = tkinter.Toplevel()  
     root.resizable(0,0)
@@ -57,8 +60,7 @@ def WhatIsThis():
     B1.pack()    
 class Paint(object):
 
-    DEFAULT_PEN_SIZE = 60.0
-    DEFAULT_COLOR = 'green'
+    DEFAULT_COLOR = 'pink'
 
 
 
@@ -66,8 +68,10 @@ class Paint(object):
         self.root = Tk()
         self.root.resizable(0,0)
         self.root.configure(bg='pink')
-        self.root.title("Basic Paint Software 3.0!") 
+        self.root.title("Basic Paint Software 4.0!")
         self.root.tk.call('wm', 'iconphoto', self.root._w, tkinter.PhotoImage(file='paint.png'))
+ 
+        #self.root.tk.call('wm', 'iconphoto', self.root._w, tkinter.PhotoImage(file='paint.png'))
         my_menu= Menu(self.root)
         self.root.config(menu=my_menu)
         file_menu= Menu(my_menu,background="pink",activebackground="#20b58b")
@@ -78,7 +82,7 @@ class Paint(object):
         self.color_button.grid(row=0, column=0)
         self.label = Label(self.root, text='Change The Size:',bg="pink",font=("ubuntu",23))
         self.label.grid(row=0,column=1)
-        self.choose_size_button = Scale(self.root, from_=1, to=100, font=("Ubuntu", 30, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", orient=HORIZONTAL)
+        self.choose_size_button = Scale(self.root, from_=1, to=200, font=("Ubuntu", 30, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", orient=HORIZONTAL)
         self.choose_size_button.grid(row=0, column=2)
         self.color_button = Button(self.root, text='Save image', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.saveimage)
         self.color_button.grid(row=0, column=3)
@@ -100,14 +104,18 @@ class Paint(object):
         self.c.bind('<ButtonRelease-1>', self.reset)
 
     def saveimage(self):
-        
+# This is what is new in the 4.0 update. 
+        global filesaver
         self.c.update()
-        self.c.postscript(file="YourDrawing.ps", colormode='color')
-        im = Image.open("YourDrawing.ps")
-        rgb_im = im.convert("RGB")
-        rgb_im.save("YourDrawing.jpg")
-    
-        
+        self.c.postscript(file=".Data/YourDrawing.ps", colormode='color')
+        im = Image.open(".Data/YourDrawing.ps")
+
+        filesaver =filedialog.asksaveasfilename(defaultextension= '.jpg')
+        rgb_img =im.convert("RGB")
+        rgb_img.save(filesaver)
+
+
+
  
     def choose_color(self):
         self.eraser_on = False
