@@ -52,7 +52,7 @@ def WhatIsThis():
 
 
     labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="What is this software?")
-    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic paint software for FreeBSD, Linux and Windows.")
+    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic paint software for FreeBSD and Linux.")
 
     labelTitle.pack(side="top",fill="x",pady=1)
     label.pack(side="top", fill="x", pady=2)
