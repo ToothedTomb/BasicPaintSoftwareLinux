@@ -12,6 +12,8 @@ from PIL import Image
 import os
 import io
 import subprocess
+from tkinter import StringVar
+from typing import Type
 def on_closing():
     root = tkinter.Toplevel()  
     root.resizable(0,0)
@@ -50,7 +52,7 @@ def WhatIsThis():
 
 
     labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="What is this software?")
-    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic paint software for FreeBSD and Linux.")
+    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic paint software for FreeBSD, Linux and Windows.")
 
     labelTitle.pack(side="top",fill="x",pady=1)
     label.pack(side="top", fill="x", pady=2)
@@ -68,24 +70,35 @@ class Paint(object):
         self.root = Tk()
         self.root.resizable(0,0)
         self.root.configure(bg='pink')
-        self.root.title("Basic Paint Software 4.0!")
+        self.root.title("Basic Paint Software 5.0!")
         self.root.tk.call('wm', 'iconphoto', self.root._w, tkinter.PhotoImage(file='paint.png'))
  
         #self.root.tk.call('wm', 'iconphoto', self.root._w, tkinter.PhotoImage(file='paint.png'))
         my_menu= Menu(self.root)
         self.root.config(menu=my_menu)
+
         file_menu= Menu(my_menu,background="pink",activebackground="#20b58b")
-        my_menu.add_cascade(label="About:",font=("Ubuntu",18),activebackground="#20b58b", menu=file_menu)
+        #This part of the navigation bar is the file. You can save and use other features.
+        Commands_Menu = Menu(my_menu,background="pink",activebackground="#20b58b")
+        my_menu.add_cascade(label="File",font=("Ubuntu",18),activebackground="#20b58b", menu=Commands_Menu)
+        Commands_Menu.add_command(label="Save the painting",font=("Ubuntu",18),activebackground="#20b58b",background="pink",command=self.saveimage)
+        my_menu.add_cascade(label="About",font=("Ubuntu",18),activebackground="#20b58b", menu=file_menu)
         file_menu.add_command(label="Who made this Software?",font=("Ubuntu",18),activebackground="#20b58b",background="pink",command=MadeBy) 
         file_menu.add_command(label="What is this software?",font=("Ubuntu",18),activebackground="#20b58b",background="pink",command=WhatIsThis) 
+       
+
         self.color_button = Button(self.root, text='Change the color', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.choose_color)
         self.color_button.grid(row=0, column=0)
         self.label = Label(self.root, text='Change The Size:',bg="pink",font=("ubuntu",23))
         self.label.grid(row=0,column=1)
-        self.choose_size_button = Scale(self.root, from_=1, to=200, font=("Ubuntu", 30, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", orient=HORIZONTAL)
+        self.choose_size_button = Scale(self.root, from_=1, to=100, font=("Ubuntu", 30, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", orient=HORIZONTAL)
         self.choose_size_button.grid(row=0, column=2)
-        self.color_button = Button(self.root, text='Save image', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.saveimage)
-        self.color_button.grid(row=0, column=3)
+        self.ChangeToPaintMode = Button(self.root, text='Paint', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.PaintMode)
+        self.ChangeToPaintMode.grid(row=0, column=3)
+        self.ChangeToEarserMode = Button(self.root, text='Eraser', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.Earser)
+        self.ChangeToEarserMode.grid(row=0, column=4)
+        #self.color_button = Button(self.root, text='Save image', font=("Ubuntu", 23, "bold"),bg="#3b8ee3",border=(1),activebackground="#20b58b", command=self.saveimage)
+        #self.color_button.grid(row=0, column=5)
         self.c = Canvas(self.root, bg='white', width=1224, height=780)
         self.c.grid(row=1, columnspan=5)
         self.root.protocol("WM_DELETE_WINDOW", on_closing)
@@ -110,7 +123,7 @@ class Paint(object):
         self.c.postscript(file=".Data/YourDrawing.ps", colormode='color')
         im = Image.open(".Data/YourDrawing.ps")
 
-        filesaver =filedialog.asksaveasfilename(defaultextension= '.jpg')
+        filesaver =filedialog.asksaveasfilename(defaultextension=".png",filetypes=[("Images Format:","*.*"),("PNG","*.png"),("RAW","*.RAW"),("JPG","*jpg")])
         rgb_img =im.convert("RGB")
         rgb_img.save(filesaver)
 
@@ -123,10 +136,13 @@ class Paint(object):
 
 
 
-    def activate_button(self, some_button, eraser_mode=False):
-        self.active_button.config(relief=RAISED)
-        some_button.config(relief=SUNKEN)
-        self.active_button = some_button
+    def Earser(self, eraser_mode=TRUE):
+        #self.ChangeToEarserMode.config(relief=RAISED)
+        #some_button.config(relief=SUNKEN)
+        #self.ChangeToEarserMode = some_button
+        self.eraser_on = eraser_mode
+    
+    def PaintMode(self, eraser_mode=False):
         self.eraser_on = eraser_mode
 
     def paint(self, event):
@@ -141,10 +157,6 @@ class Paint(object):
 
     def reset(self, event):
         self.old_x, self.old_y = None, None
-
-
-
-
-
+#This code will use the right button on mouse to delete lol
 if __name__ == '__main__':
     Paint()
